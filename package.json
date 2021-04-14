@@ -1,0 +1,14 @@
+{
+  "name": "hw-12-mySQL",
+  "version": "1.0",
+  "description": "hw-12",
+  "main": "server.js",
+  "repository": "git@github.com:Spragbry/hw-12-mySQL.git",
+  "author": "Bryce Spraggins <spragbry93@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1"
+  }
+}
