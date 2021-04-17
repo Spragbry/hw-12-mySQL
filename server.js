@@ -107,8 +107,19 @@ inquirer.prompt([
 
         })
 }).catch(err => {
-
+    console.error("error", error)
+    reject(error)
 })
+
+INSERT INTO department (id, name)
+VALUES (1, "Bryce");
+
+INSERT INTO role (id, title, salary, department_id)
+VALUES (1, "manager", 80000, 0);
+
+INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
+VALUES (1, "Tony", "Spraggins", 0, 375);
+
 const connection = mysql.createConnection({
   host     : 'localhost', 
   user     : 'Spragbry', //Spragbry@localhost
@@ -118,9 +129,25 @@ const connection = mysql.createConnection({
  
 connection.connect();
  
-connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results[0].solution);
-});
- 
+const testQuery = () => {
+    connection.query("SELECT * FROM department", (err, res) => {
+      if(err) throw err;
+      console.log(res);
+      connection.end();
+    });
+  }
+
+const testQuery2 = () => {
+    connection.query("SELECT * FROM role", (err, res) => {
+      if(err) throw(err);
+      console.log(res);
+      connection.end();
+    });
+
+const testQuery = () => {
+    connection.query("SELECT * FROM employee", (err, res) => {
+        if(err) throw(err);
+          console.log(res);
+          connection.end();
+        });
 connection.end();
