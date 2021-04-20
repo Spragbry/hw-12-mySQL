@@ -1,10 +1,23 @@
-const mysql = require('mysql')
-const inquirer = require("inquirer")
-import Deparment from "./lib/department"
-import Employee from "./lib/employee"
-import Role from "./lib/role"
+import mysql from 'mysql'
+import inquirer from "inquirer"
+import Department from "./lib/department.js"
+import Employee from "./lib/employee.js"
+import Role from "./lib/role.js"
 
-inquirer.prompt([
+
+let isOver = false
+while(!isOver) {
+
+    const connection = mysql.createConnection({
+        host     : 'localhost', 
+        user     : 'Spragbry', //Spragbry@localhost
+        password : 'RicoKatochaz123',
+        database : 'my_db'
+      });
+       
+      connection.connect();
+
+      let answers = await inquirer.prompt([
     {
         type: "list",
         name: "question_1",
@@ -12,7 +25,6 @@ inquirer.prompt([
         choices: ["department", "role", "employee"]
     },
   ])
-  .then(answers => {
     let questions = []
     const choice = answers["question_1"]
     if(choice === "department") {
@@ -86,68 +98,35 @@ inquirer.prompt([
             default: "1"
         }]
     }
-    inquirer.prompt(questions)
-        .then(answers2 => {
+    let answers2 = await inquirer.prompt(questions)
            if(answers2["question_2"]) {
                const id = answers2["question_2"]
                const name = answers2["question_3"]
-           }else if(answers2["question_4"]) {
+               const depo = new Department(id, name)
+               console.log("department",name)
+               console.log("department", id)
+               connection.query(`INSERT INTO department (${depo.getId()},${depo.getName()});`, function (error, results, fields) {
+                if (error) throw error;
+                console.log('The resulting table is: ', results);
+              });
+           } else if(answers2["question_4"]) {
                 const id = answers2["question_4"]
                 const first_name = answers2["quesiton_5"]
                 const last_name = answers2["question_6"]
                 const role_id = answers2["question_7"]
                 const manager_id = answers2["question_8"]
-           }else (answers2["question_9"]) {
+                const employee = new Employee(id, first_name, last_name, role_id, manager_id)
+                connection.query(`INSERT INTO employee (${employee.getId()},${employee.getFirstName()},${employee.getlastName()},${employee.getRoleId()},${employee.getManagerId()});`, function (error, results, fields) {})
+           } else {
                const id = answers2["question_9"]
                const title = answers2["question_10"]
                const salary = answers2["question_11"]
                const departmentId = answers2["question_12"]
+               const role = new Role(id, title, salary, department_id)
+                connection.query(`INSERT INTO role (${role.getId()},${role.getTitle()},${role.getSalary()},${employee.getDepartmentId()});`, function (error, results, fields) {
+                    if (error) throw error;
+                    console.log('The resulting table is: ', results);
+               })
            }
-        }).catch(err => {
-
-        })
-}).catch(err => {
-    console.error("error", error)
-    reject(error)
-})
-
-INSERT INTO department (id, name)
-VALUES (1, "Bryce");
-
-INSERT INTO role (id, title, salary, department_id)
-VALUES (1, "manager", 80000, 0);
-
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (1, "Tony", "Spraggins", 0, 375);
-
-const connection = mysql.createConnection({
-  host     : 'localhost', 
-  user     : 'Spragbry', //Spragbry@localhost
-  password : 'RicoKatochaz123',
-  database : 'my_db'
-});
- 
-connection.connect();
- 
-const testQuery = () => {
-    connection.query("SELECT * FROM department", (err, res) => {
-      if(err) throw err;
-      console.log(res);
-      connection.end();
-    });
-  }
-
-const testQuery2 = () => {
-    connection.query("SELECT * FROM role", (err, res) => {
-      if(err) throw(err);
-      console.log(res);
-      connection.end();
-    });
-
-const testQuery = () => {
-    connection.query("SELECT * FROM employee", (err, res) => {
-        if(err) throw(err);
-          console.log(res);
-          connection.end();
-        });
-connection.end();
+                    
+    }

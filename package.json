@@ -13,5 +13,8 @@
   },
   "scripts": {
     "run": "node server.js"
-  }
+  },
+  "type": "module"
 }
+
+
